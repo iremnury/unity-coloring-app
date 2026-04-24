@@ -22,12 +22,17 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
     public GameObject completionPanel;
     private bool isCompleted = false;
 
+    public Texture2D[] levelTextures;
+
+    public string levelID = "Level1";
+
+
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
 
-        Texture2D src = image.sprite.texture;
+        Texture2D src = levelTextures[GameManager.selectedLevel - 1];
 
         // keep the original texture to detect border pixels later
         originalTexture = new Texture2D(src.width, src.height, TextureFormat.RGBA32, false);
@@ -119,6 +124,9 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         {
             isCompleted = true;
             completionPanel.SetActive(true);
+
+            PlayerPrefs.SetInt(levelID, 1);
+            PlayerPrefs.Save();
         }
         workingTexture.Apply();
     }

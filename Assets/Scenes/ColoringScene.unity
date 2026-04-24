@@ -1068,6 +1068,11 @@ MonoBehaviour:
   paintColor: {r: 1, g: 0, b: 0, a: 1}
   completionThreshold: 0.9
   completionPanel: {fileID: 603191413}
+  levelTextures:
+  - {fileID: 2800000, guid: ce34cbb154409480ab9b5da93a4a6c7b, type: 3}
+  - {fileID: 2800000, guid: 3c249dafdf621463e99d21369f6ab66c, type: 3}
+  - {fileID: 2800000, guid: a2988228d6b3049f894c1d0376f16d8b, type: 3}
+  levelID: Level1
 --- !u!114 &1052036980
 MonoBehaviour:
   m_ObjectHideFlags: 0
