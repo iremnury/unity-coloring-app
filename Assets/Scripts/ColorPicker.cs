@@ -20,6 +20,11 @@ public class ColorPicker : MonoBehaviour
         allPickers.Add(this);
     }
 
+    void OnDestroy()
+    {
+        allPickers.Remove(this);
+    }
+
     public void SelectColor()
     {
         painter.paintColor = selectedColor;
@@ -32,6 +37,9 @@ public class ColorPicker : MonoBehaviour
     
         foreach (var picker in allPickers)
         {
+            if (picker == null)
+                continue;
+
             if (picker.selectionRing != null)
                 picker.selectionRing.SetActive(false);
 
