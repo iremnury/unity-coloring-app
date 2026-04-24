@@ -5,12 +5,19 @@ using System.Collections.Generic;
 
 public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 {
-    public Color paintColor = Color.red;
+    public Color paintColor = Color.white;
+    public float completionThreshold = 0.9f;
 
     private Texture2D originalTexture;
     private Texture2D workingTexture;
     private RectTransform rectTransform;
     private Image image;
+
+    private int totalFillablePixels;
+    private int paintedPixels;
+
+    private bool[,] backgroundPixels;
+    private bool[,] paintedPixelMap;
 
     void Start()
     {
@@ -29,11 +36,15 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         workingTexture.SetPixels(src.GetPixels());
         workingTexture.Apply();
 
+        paintedPixelMap = new bool[workingTexture.width, workingTexture.height];
+
         image.sprite = Sprite.Create(
             workingTexture,
             new Rect(0, 0, workingTexture.width, workingTexture.height),
             new Vector2(0.5f, 0.5f)
         );
+        DetectBackgroundPixels();
+        CountFillablePixels();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -98,6 +109,9 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
             return;
 
         FloodFill(px, py);
+
+        float percent = (float)paintedPixels / totalFillablePixels;
+        Debug.Log("Completion: " + (percent * 100f) + "%");
         workingTexture.Apply();
     }
 
@@ -126,8 +140,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
             visited[x, y] = true;
 
-            if (IsOutlinePixel(x, y))
-                continue;
+            if (!IsPaintablePixel(x, y)) continue;
 
             Color currentColor = workingTexture.GetPixel(x, y);
 
@@ -135,6 +148,12 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
                 continue;
 
             workingTexture.SetPixel(x, y, paintColor);
+
+            if (!paintedPixelMap[x, y])
+            {
+                paintedPixelMap[x, y] = true;
+                paintedPixels++;
+            }
 
             queue.Enqueue(new Vector2Int(x + 1, y));
             queue.Enqueue(new Vector2Int(x - 1, y));
@@ -153,11 +172,83 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         return brightness < 0.2f;
     }
 
+    bool IsPaintablePixel(int x, int y)
+    {
+        if (IsOutlinePixel(x, y))
+            return false;
+
+        if (backgroundPixels != null && backgroundPixels[x, y])
+            return false;
+
+        return true;
+    }
     bool ApproximatelySameColor(Color a, Color b)
     {
         return Mathf.Abs(a.r - b.r) < 0.05f &&
                Mathf.Abs(a.g - b.g) < 0.05f &&
                Mathf.Abs(a.b - b.b) < 0.05f &&
                Mathf.Abs(a.a - b.a) < 0.05f;
+    }
+
+    void CountFillablePixels()
+    {
+        totalFillablePixels = 0;
+
+        for (int x = 0; x < originalTexture.width; x++)
+        {
+            for (int y = 0; y < originalTexture.height; y++)
+            {
+                if (IsPaintablePixel(x, y))
+                {
+                    totalFillablePixels++;
+                }
+            }
+        }
+
+        Debug.Log("Total paintable pixel: " + totalFillablePixels);
+    }
+
+    void DetectBackgroundPixels()
+    {
+        int width = originalTexture.width;
+        int height = originalTexture.height;
+
+        backgroundPixels = new bool[width, height];
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+
+        for (int x = 0; x < width; x++)
+        {
+            queue.Enqueue(new Vector2Int(x, 0));
+            queue.Enqueue(new Vector2Int(x, height - 1));
+        }
+
+        for (int y = 0; y < height; y++)
+        {
+            queue.Enqueue(new Vector2Int(0, y));
+            queue.Enqueue(new Vector2Int(width - 1, y));
+        }
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+            int x = current.x;
+            int y = current.y;
+
+            if (x < 0 || x >= width || y < 0 || y >= height)
+                continue;
+
+            if (backgroundPixels[x, y])
+                continue;
+
+            if (IsOutlinePixel(x, y))
+                continue;
+
+            backgroundPixels[x, y] = true;
+
+            queue.Enqueue(new Vector2Int(x + 1, y));
+            queue.Enqueue(new Vector2Int(x - 1, y));
+            queue.Enqueue(new Vector2Int(x, y + 1));
+            queue.Enqueue(new Vector2Int(x, y - 1));
+        }
     }
 }
