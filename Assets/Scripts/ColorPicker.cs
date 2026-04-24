@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class ColorPicker : MonoBehaviour
 {
@@ -28,16 +29,25 @@ public class ColorPicker : MonoBehaviour
         PlayerPrefs.SetFloat("B", selectedColor.b);
         PlayerPrefs.Save();
 
-   
         foreach (var picker in allPickers)
         {
             if (picker.selectionRing != null)
                 picker.selectionRing.SetActive(false);
         }
 
-        
         if (selectionRing != null)
             selectionRing.SetActive(true);
+
+        // animation
+        transform.DOKill();
+        transform.localScale = Vector3.one;
+
+        transform.DOScale(1.2f, 0.15f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                transform.DOScale(1f, 0.1f);
+            });
 
         Debug.Log("selected color: " + selectedColor);
     }
