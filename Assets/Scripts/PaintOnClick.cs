@@ -19,6 +19,9 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
     private bool[,] backgroundPixels;
     private bool[,] paintedPixelMap;
 
+    public GameObject completionPanel;
+    private bool isCompleted = false;
+
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -112,6 +115,11 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
         float percent = (float)paintedPixels / totalFillablePixels;
         Debug.Log("Completion: " + (percent * 100f) + "%");
+        if (!isCompleted && percent >= completionThreshold)
+        {
+            isCompleted = true;
+            completionPanel.SetActive(true);
+        }
         workingTexture.Apply();
     }
 
