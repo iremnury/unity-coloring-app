@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ColorPicker : MonoBehaviour
 {
@@ -8,18 +9,36 @@ public class ColorPicker : MonoBehaviour
     // color assigned to this picker
     public Color selectedColor;
 
-public void SelectColor()
-{
-    painter.paintColor = selectedColor;
+    public GameObject selectionRing;
 
-    PlayerPrefs.SetFloat("R", selectedColor.r);
-    PlayerPrefs.SetFloat("G", selectedColor.g);
-    PlayerPrefs.SetFloat("B", selectedColor.b);
-    PlayerPrefs.Save();
 
- 
-    // transform.localScale = Vector3.one * 1.2f;
+    private static List<ColorPicker> allPickers = new List<ColorPicker>();
 
-    Debug.Log("selected color: " + selectedColor);
-}
+    void Awake()
+    {
+        allPickers.Add(this);
+    }
+
+    public void SelectColor()
+    {
+        painter.paintColor = selectedColor;
+
+        PlayerPrefs.SetFloat("R", selectedColor.r);
+        PlayerPrefs.SetFloat("G", selectedColor.g);
+        PlayerPrefs.SetFloat("B", selectedColor.b);
+        PlayerPrefs.Save();
+
+   
+        foreach (var picker in allPickers)
+        {
+            if (picker.selectionRing != null)
+                picker.selectionRing.SetActive(false);
+        }
+
+        
+        if (selectionRing != null)
+            selectionRing.SetActive(true);
+
+        Debug.Log("selected color: " + selectedColor);
+    }
 }

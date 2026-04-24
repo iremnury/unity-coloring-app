@@ -32,6 +32,8 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
 
+        levelID = "Level" + GameManager.selectedLevel;
+
         if (PlayerPrefs.HasKey("R"))
         {
             float r = PlayerPrefs.GetFloat("R");
