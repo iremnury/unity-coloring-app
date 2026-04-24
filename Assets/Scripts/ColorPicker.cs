@@ -8,10 +8,18 @@ public class ColorPicker : MonoBehaviour
     // color assigned to this picker
     public Color selectedColor;
 
-    public void SelectColor()
-    {
-        // send this picker color to the painter
-        painter.paintColor = selectedColor;
-        Debug.Log("selected color: " + selectedColor);
-    }
+public void SelectColor()
+{
+    painter.paintColor = selectedColor;
+
+    PlayerPrefs.SetFloat("R", selectedColor.r);
+    PlayerPrefs.SetFloat("G", selectedColor.g);
+    PlayerPrefs.SetFloat("B", selectedColor.b);
+    PlayerPrefs.Save();
+
+ 
+    // transform.localScale = Vector3.one * 1.2f;
+
+    Debug.Log("selected color: " + selectedColor);
+}
 }

@@ -32,6 +32,15 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
 
+        if (PlayerPrefs.HasKey("R"))
+        {
+            float r = PlayerPrefs.GetFloat("R");
+            float g = PlayerPrefs.GetFloat("G");
+            float b = PlayerPrefs.GetFloat("B");
+
+            paintColor = new Color(r, g, b);
+        }
+
         Texture2D src = levelTextures[GameManager.selectedLevel - 1];
 
         // keep the original texture to detect border pixels later
