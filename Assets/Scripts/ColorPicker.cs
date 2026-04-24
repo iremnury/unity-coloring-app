@@ -29,25 +29,23 @@ public class ColorPicker : MonoBehaviour
         PlayerPrefs.SetFloat("B", selectedColor.b);
         PlayerPrefs.Save();
 
+    
         foreach (var picker in allPickers)
         {
             if (picker.selectionRing != null)
                 picker.selectionRing.SetActive(false);
+
+            picker.transform.DOKill();
+            picker.transform.DOScale(1f, 0.2f).SetEase(Ease.OutQuad);
         }
 
+        
         if (selectionRing != null)
             selectionRing.SetActive(true);
 
-        // animation
+        // animation 
         transform.DOKill();
-        transform.localScale = Vector3.one;
-
-        transform.DOScale(1.2f, 0.15f)
-            .SetEase(Ease.OutBack)
-            .OnComplete(() =>
-            {
-                transform.DOScale(1f, 0.1f);
-            });
+        transform.DOScale(1.2f, 0.2f).SetEase(Ease.OutBack);
 
         Debug.Log("selected color: " + selectedColor);
     }
