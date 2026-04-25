@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 {
@@ -135,6 +136,12 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         {
             isCompleted = true;
             completionPanel.SetActive(true);
+            // set to zero at start
+            completionPanel.transform.localScale = Vector3.zero;
+
+            // anşmation
+            completionPanel.transform.DOScale(1f, 0.4f)
+                .SetEase(Ease.OutBack);
 
             PlayerPrefs.SetInt(levelID, 1);
             PlayerPrefs.Save();
