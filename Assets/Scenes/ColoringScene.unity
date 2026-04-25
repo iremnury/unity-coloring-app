@@ -933,8 +933,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -1243,6 +1243,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.9607843, g: 0.4627451, b: 0.7490196, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 5
   selectionRing: {fileID: 1534020771}
 --- !u!1 &952017305
 GameObject:
@@ -1392,6 +1394,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.007843138, g: 0.49803922, b: 0.8509804, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 3
   selectionRing: {fileID: 208487521}
 --- !u!1 &962248388
 GameObject:
@@ -1541,6 +1545,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.8509804, g: 0, b: 0, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 0
   selectionRing: {fileID: 418446705}
 --- !u!1 &1052036977
 GameObject:
@@ -1894,6 +1900,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.9607843, g: 0.90588236, b: 0.18431373, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 1
   selectionRing: {fileID: 1883207983}
 --- !u!1 &1368669674
 GameObject:
@@ -2409,6 +2417,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  paletteData: {fileID: 0}
+  colorIndex: 0
   selectionRing: {fileID: 0}
 --- !u!114 &1731082437
 MonoBehaviour:
@@ -2584,6 +2594,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.5137255, g: 0.19607843, b: 0.8901961, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 4
   selectionRing: {fileID: 214732148}
 --- !u!1 &1813960302
 GameObject:
@@ -2876,6 +2888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painter: {fileID: 1052036979}
   selectedColor: {r: 0.1254902, g: 0.6901961, b: 0.23921569, a: 1}
+  paletteData: {fileID: 11400000, guid: 17104aec267c245eca6c3c97618654c7, type: 2}
+  colorIndex: 2
   selectionRing: {fileID: 1368669674}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

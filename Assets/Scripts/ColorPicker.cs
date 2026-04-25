@@ -10,6 +10,9 @@ public class ColorPicker : MonoBehaviour
     // color assigned to this picker
     public Color selectedColor;
 
+    public ColorPaletteData paletteData;
+    public int colorIndex;
+
     public GameObject selectionRing;
 
 
@@ -18,6 +21,11 @@ public class ColorPicker : MonoBehaviour
     void Awake()
     {
         allPickers.Add(this);
+
+        if (paletteData != null && paletteData.colors.Length > colorIndex)
+        {
+            selectedColor = paletteData.colors[colorIndex];
+        }
     }
 
     void OnDestroy()
@@ -33,6 +41,8 @@ public class ColorPicker : MonoBehaviour
         PlayerPrefs.SetFloat("G", selectedColor.g);
         PlayerPrefs.SetFloat("B", selectedColor.b);
         PlayerPrefs.Save();
+
+        Debug.Log("Paint color: " + selectedColor);
 
     
         foreach (var picker in allPickers)
