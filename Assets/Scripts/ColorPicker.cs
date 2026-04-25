@@ -36,6 +36,16 @@ public class ColorPicker : MonoBehaviour
     public void SelectColor()
     {
         painter.paintColor = selectedColor;
+        painter.isEraser = false;
+
+        if (EraserButton.activeEraser != null)
+        {
+            if (EraserButton.activeEraser.selectionRing != null)
+                EraserButton.activeEraser.selectionRing.SetActive(false);
+
+            EraserButton.activeEraser.transform.DOKill();
+            EraserButton.activeEraser.transform.DOScale(1f, 0.2f).SetEase(Ease.OutQuad);
+        }
 
         PlayerPrefs.SetFloat("R", selectedColor.r);
         PlayerPrefs.SetFloat("G", selectedColor.g);

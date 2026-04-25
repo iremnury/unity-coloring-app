@@ -29,6 +29,15 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     public RectTransform greatJobText;
 
+    public bool isEraser = false;
+    public Color eraserColor = Color.white;
+
+
+    public GameObject eraserButton;
+    public GameObject palettePanel;
+
+
+
 
     void Start()
     {
@@ -137,7 +146,20 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         if (!isCompleted && percent >= completionThreshold)
         {
             isCompleted = true;
+
+
             completionPanel.SetActive(true);
+
+            if (eraserButton != null){
+                eraserButton.SetActive(false);
+                }
+                
+
+            if (palettePanel != null){ 
+                palettePanel.SetActive(false);
+                }
+               
+
             // set to zero at start
             completionPanel.transform.localScale = Vector3.zero;
 
@@ -164,7 +186,6 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         int width = workingTexture.width;
         int height = workingTexture.height;
 
-        // fill the connected area without crossing the outline
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         bool[,] visited = new bool[width, height];
 
@@ -184,19 +205,32 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
             visited[x, y] = true;
 
-            if (!IsPaintablePixel(x, y)) continue;
-
-            Color currentColor = workingTexture.GetPixel(x, y);
-
-            if (ApproximatelySameColor(currentColor, paintColor))
+            if (!IsPaintablePixel(x, y))
                 continue;
 
-            workingTexture.SetPixel(x, y, paintColor);
+            Color currentColor = workingTexture.GetPixel(x, y);
+            Color targetPaintColor = isEraser ? eraserColor : paintColor;
 
-            if (!paintedPixelMap[x, y])
+            if (ApproximatelySameColor(currentColor, targetPaintColor))
+                continue;
+
+            workingTexture.SetPixel(x, y, targetPaintColor);
+
+            if (isEraser)
             {
-                paintedPixelMap[x, y] = true;
-                paintedPixels++;
+                if (paintedPixelMap[x, y])
+                {
+                    paintedPixelMap[x, y] = false;
+                    paintedPixels--;
+                }
+            }
+            else
+            {
+                if (!paintedPixelMap[x, y])
+                {
+                    paintedPixelMap[x, y] = true;
+                    paintedPixels++;
+                }
             }
 
             queue.Enqueue(new Vector2Int(x + 1, y));
@@ -205,6 +239,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
             queue.Enqueue(new Vector2Int(x, y - 1));
         }
     }
+
 
     bool IsOutlinePixel(int x, int y)
     {
