@@ -27,6 +27,8 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     public string levelID = "Level1";
 
+    public RectTransform greatJobText;
+
 
     void Start()
     {
@@ -139,9 +141,17 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
             // set to zero at start
             completionPanel.transform.localScale = Vector3.zero;
 
-            // anşmation
-            completionPanel.transform.DOScale(1f, 0.4f)
-                .SetEase(Ease.OutBack);
+            // animation
+            completionPanel.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
+            
+            greatJobText.localScale = Vector3.zero;
+
+            greatJobText.DOScale(1.2f, 0.3f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    greatJobText.DOScale(1f, 0.2f);
+                });
 
             PlayerPrefs.SetInt(levelID, 1);
             PlayerPrefs.Save();
