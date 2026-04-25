@@ -20,6 +20,7 @@ public class ColorPicker : MonoBehaviour
 
     void Awake()
     {
+        // keep a shared list so only one swatch looks active at a time
         allPickers.Add(this);
 
         if (paletteData != null && paletteData.colors.Length > colorIndex)
@@ -35,6 +36,7 @@ public class ColorPicker : MonoBehaviour
 
     public void SelectColor()
     {
+        // switch the painter back from eraser mode to normal color mode
         painter.paintColor = selectedColor;
         painter.isEraser = false;
 
@@ -54,7 +56,7 @@ public class ColorPicker : MonoBehaviour
 
         Debug.Log("Paint color: " + selectedColor);
 
-    
+        // reset all other swatches before showing the new active one
         foreach (var picker in allPickers)
         {
             if (picker == null)
@@ -67,11 +69,10 @@ public class ColorPicker : MonoBehaviour
             picker.transform.DOScale(1f, 0.2f).SetEase(Ease.OutQuad);
         }
 
-        
         if (selectionRing != null)
             selectionRing.SetActive(true);
 
-        // animation 
+        // add a small bounce to the selected swatch
         transform.DOKill();
         transform.DOScale(1.2f, 0.2f).SetEase(Ease.OutBack);
 

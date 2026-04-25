@@ -8,6 +8,7 @@ public class LevelButtonUI : MonoBehaviour
 
     void Start()
     {
+        // tint finished levels so they stand out in the grid
         if (PlayerPrefs.GetInt(levelID, 0) == 1)
         {
             buttonImage.color = Color.green;

@@ -7,6 +7,7 @@ public class LevelCompletionView : MonoBehaviour
 
     void Start()
     {
+        // show the completion icon only for finished levels
         bool isCompleted = PlayerPrefs.GetInt(levelID, 0) == 1;
         completedMark.SetActive(isCompleted);
     }

@@ -50,6 +50,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
+        // cache ui references used for click conversion and texture display
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
 
@@ -79,6 +80,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private void OnDisable()
     {
+        // keep the latest painted state before leaving the scene
         SaveCurrentProgress();
     }
 
@@ -86,12 +88,14 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
     {
         if (pauseStatus)
         {
+            // save when the app goes into the background
             SaveCurrentProgress();
         }
     }
 
     private void OnApplicationQuit()
     {
+        // save one last time before the app closes
         SaveCurrentProgress();
     }
 
@@ -146,6 +150,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         float normalizedX = adjustedX / displayedWidth;
         float normalizedY = adjustedY / displayedHeight;
 
+        // map the ui click point back to the source texture pixel
         int px = Mathf.RoundToInt(normalizedX * (textureWidth - 1));
         int py = Mathf.RoundToInt(normalizedY * (textureHeight - 1));
 
@@ -168,6 +173,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         }
         else if (ApproximatelySameColor(sourceColor, (Color32)paintColor))
         {
+            // skip fills that would not change the tapped region
             return;
         }
 
@@ -188,6 +194,8 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
         Queue<int> queue = new Queue<int>();
         int startIndex = GetIndex(startX, startY);
+
+        // remember the tapped region color so the fill stays inside it
         Color32 sourceColor = workingPixels[startIndex];
         Color32 selectedColor = (Color32)paintColor;
         bool fillUsesEraser = isEraser;
@@ -287,6 +295,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
             return;
         }
 
+        // restore the last selected palette color from prefs
         float r = PlayerPrefs.GetFloat("R");
         float g = PlayerPrefs.GetFloat("G");
         float b = PlayerPrefs.GetFloat("B");
@@ -313,6 +322,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
         textureWidth = sourceTexture.width;
         textureHeight = sourceTexture.height;
 
+        // keep the source texture untouched for outline checks and erasing
         originalTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
         originalTexture.SetPixels32(sourceTexture.GetPixels32());
         originalTexture.Apply(false);
@@ -392,8 +402,46 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private void ApplyWorkingPixels()
     {
+        // copy the edited color array back into the visible texture
         workingTexture.SetPixels32(workingPixels);
         workingTexture.Apply(false);
+    }
+
+    public void ResetLoadedProgress()
+    {
+        if (originalPixels == null || workingPixels == null || workingTexture == null)
+        {
+            return;
+        }
+
+        if (activeFillRoutine != null)
+        {
+            StopCoroutine(activeFillRoutine);
+            activeFillRoutine = null;
+        }
+
+        isFilling = false;
+        isCompleted = false;
+
+        // restore the current canvas to the untouched source art
+        System.Array.Copy(originalPixels, workingPixels, originalPixels.Length);
+        ApplyWorkingPixels();
+        RebuildPaintedState();
+
+        if (completionPanel != null)
+        {
+            completionPanel.SetActive(false);
+        }
+
+        if (eraserButton != null)
+        {
+            eraserButton.SetActive(true);
+        }
+
+        if (palettePanel != null)
+        {
+            palettePanel.SetActive(true);
+        }
     }
 
     private void SaveCurrentProgress()
@@ -411,6 +459,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private void RebuildPaintedState()
     {
+        // count how much of the valid paint area is already filled
         totalFillablePixels = 0;
         paintedPixels = 0;
 
@@ -499,6 +548,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private bool IsPaintableIndex(int index)
     {
+        // ignore border pixels and the outer background area
         if (IsOutlinePixel(index))
         {
             return false;
@@ -514,6 +564,7 @@ public class PaintOnClick : MonoBehaviour, IPointerClickHandler
 
     private bool ApproximatelySameColor(Color32 a, Color32 b)
     {
+        // allow a small tolerance so tiny color differences do not break fills
         float tolerance = ColorTolerance * 255f;
         return Mathf.Abs(a.r - b.r) < tolerance &&
                Mathf.Abs(a.g - b.g) < tolerance &&
