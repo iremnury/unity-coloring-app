@@ -2,6 +2,9 @@
 
 A simple Unity coloring game prototype built for the Otsimo software engineering intern study.
 
+## Gameplay Video
+https://youtu.be/3KoT8Mkmh-w?si=zOk4mVONzw49kboE
+
 ## Overview
 
 This project contains a small children’s coloring app flow with:
